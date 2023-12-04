@@ -15,33 +15,51 @@ function Main() {
       .then((res) => setData(res.data));
   }, []);
 
-  const handleClick = (id) => {
-    setCheckData((prev)=> [...prev, id])
-  } 
-
-//   console.log(checkData)
-
-  const handleDelete = (id) =>{
-    console.log('id in handleDetelte', id);
-    const dataId = data.findIndex(parseInt(id));
-    console.log(typeof(dataId))
-    console.log(dataId);    
+  const handleClick = (e) => {
+    const check = e.target.checked;
+    console.log(check, e.target.value);
+    if(check){
+      setCheckData((prev) => [...prev, e.target.value]);
+    }
+    else{
+      const newArr = checkData.filter((data) => {
+        return data !== e.target.value;
+      })
+      setCheckData(() => newArr)
+    }
+    
   }
-  
+  console.log(checkData)
+
+  const handleDeleteAll = () => {
+    const newArr = data.filter((val) => {
+      return checkData.includes(val.id) === false
+    })
+
+    console.log(111)
+    setData(() => newArr)
+    setCheckData([])
+  }
+  console.log(data)
   return (
     <div style={{ minHeight:'100vh', width: '100vw' }}>
-      {data.map((value, id) => {
+      {data.map((value) => {
         return (
           // eslint-disable-next-line react/jsx-key
           <div key={value.id} style={{padding: '5px', width: '90vw',display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-            <input type="checkbox" name="" id={id} onChange={() => handleClick(value.id)}/>
+            <input type="checkbox" name="" value={value.id} onChange={(e) => handleClick(e)}/>
             <div>{value.name}</div>
             <div>{value.email}</div>
             <div>{value.role}</div>
-            <div style={{display: 'flex', gap:'10px'}}><p>copy</p> <p onClick={() => handleDelete(value.id)}>delete</p></div>
+            <div style={{display: 'flex', gap:'10px'}}> <button>delete</button></div>
           </div>
+        
         );
       })}
+      <div>{checkData.length}</div>
+      <div>
+        <button onClick={handleDeleteAll}>Delete</button>
+      </div>
     </div>
   );
 }
